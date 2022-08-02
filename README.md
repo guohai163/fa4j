@@ -77,7 +77,7 @@ FormsAuthentication 是微软在 .Net 2.0时的产物一直持续到.net 4.8 之
 
 整个加密过程先做的是Ticket的串行化。分为2.0和4.0以及打了sp补丁后的两种串行化方案。先上对比图
 
-![ticket](doc/ticket.svg)
+![ticket](doc/ticket.png)
 
 1. 其中源码中标记为不安全的使用的是操作系统携带的 webengine.dll 中的 CookieAuthConstructTicket 方法。在网上能搜到这个dll的实现源码是个[CPP代码](https://github.com/selfrender/Windows-Server-2003/blob/5c6fe3db626b63a384230a1aa6b92ac416b0765f/com/netfx/src/framework/xsp/isapi/securityapi.cxx)，怀疑可以通过传输特定的 userdata 造成内存泄漏
 2. 第二种方案被标记为安全的串行化，直接使用的.net自带的程序实现了序列化。
@@ -86,5 +86,5 @@ FormsAuthentication 是微软在 .Net 2.0时的产物一直持续到.net 4.8 之
 
 之后就是套填充，做hash。看一下最终的数据结构
 
-![cookies](doc/cookies.svg)
+![cookies](doc/cookie.png)
 
