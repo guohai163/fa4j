@@ -79,7 +79,7 @@ FormsAuthentication 是微软在 .Net 2.0时的产物一直持续到.net 4.8 之
 
 ![ticket](doc/ticket.svg)
 
-1. 其中源码中标记为不安全的使用的是操作系统携带的 webengine.dll 中的 CookieAuthConstructTicket 方法。在网上能搜到这个dll的实现源码是个CPP代码，怀疑可以通过传输特定的 userdata 造成内存泄漏
+1. 其中源码中标记为不安全的使用的是操作系统携带的 webengine.dll 中的 CookieAuthConstructTicket 方法。在网上能搜到这个dll的实现源码是个[CPP代码](https://github.com/selfrender/Windows-Server-2003/blob/5c6fe3db626b63a384230a1aa6b92ac416b0765f/com/netfx/src/framework/xsp/isapi/securityapi.cxx)，怀疑可以通过传输特定的 userdata 造成内存泄漏
 2. 第二种方案被标记为安全的串行化，直接使用的.net自带的程序实现了序列化。
 3. 要注意在旧版本中的时间使用的是FileTime，这是一个从1601年1月1日为原点的100纳秒为单位的计时方案。新版本中的日期时间使用的是 Ticks，这是一个从0001年1月1日为原点100纳秒为单位的计时方案。
 4. 程序中的long转byte都是使用的小端存储，与java中的默认大端不一样需要手工转存。
