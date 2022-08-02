@@ -38,8 +38,8 @@ public class CryptoUtil {
     /**
      * byte转换为string方便传输
      * c#中byte是0~255  java中byte是-128~127小心此坑
-     * @param data
-     * @return
+     * @param data 待处理的数据
+     * @return 转换后的string
      */
     public static String binaryToHex(byte[] data){
         if (data == null)
@@ -62,8 +62,8 @@ public class CryptoUtil {
 
     /**
      * 编码时使用，
-     * @param nibble
-     * @return
+     * @param nibble 待处理的byte
+     * @return 转换后的结果
      */
     private static char NibbleToHex(short nibble)
     {
@@ -73,8 +73,8 @@ public class CryptoUtil {
 
     /**
      * 解码时使用
-     * @param h
-     * @return
+     * @param h 待处理的byte
+     * @return 转换的结果
      */
     private static int HexToInt(char h)
     {

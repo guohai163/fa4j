@@ -20,11 +20,11 @@ public class FormsAuthentication {
     /**
      * hash
      */
-    private HashProvider hashProvider;
+    private final HashProvider hashProvider;
     /**
      * 加密
      */
-    private MachineKeySection machineKeySection;
+    private final MachineKeySection machineKeySection;
 
     /**
      * 是否使用高版本的安全串行化
@@ -53,14 +53,14 @@ public class FormsAuthentication {
      * 目前支持 3DES、DES、AES加密和 SHA1的HASH。
      * @param ticket 待加密的对象
      * @return 加密后再次编码的字符串
-     * @throws Exception
+     * @throws Exception 异常
      */
     public String encrypt(FormsAuthenticationTicket ticket) throws Exception {
         if(ticket == null){
             throw new NullPointerException("ticket is null");
         }
 
-        byte[] bBlob = null;
+        byte[] bBlob;
         // 通过安全级别参数，判断串行方案
         if(useLegacyFormsAuthenticationTicketCompatibility){
             log.debug("user {} use unsafe serialize", ticket.getName());
@@ -105,8 +105,9 @@ public class FormsAuthentication {
 
     /**
      * 对数据进行解密
-     * @param data
-     * @return
+     * @param data 解密的串
+     * @return 解密后的对象
+     * @throws Exception 异常
      */
     public FormsAuthenticationTicket decrypt(String data) throws Exception {
         if (null == data || data.length() > MAX_TICKET_LENGTH)

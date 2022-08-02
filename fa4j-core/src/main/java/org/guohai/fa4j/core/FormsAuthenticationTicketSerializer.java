@@ -30,9 +30,9 @@ public class FormsAuthenticationTicketSerializer {
 
     /**
      * 对票据进行串行化
-     * @param ticket
-     * @return
-     * @throws IOException
+     * @param ticket 串行的票据数据
+     * @return 串行后的结果
+     * @throws IOException 异常
      */
     public static byte[] serialize(FormsAuthenticationTicket ticket) throws IOException {
 

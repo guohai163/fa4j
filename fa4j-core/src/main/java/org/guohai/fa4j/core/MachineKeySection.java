@@ -38,7 +38,7 @@ public class MachineKeySection {
     private Key key;
 
 
-    private byte[] decryptionKeyBlob;
+    private final byte[] decryptionKeyBlob;
 
 
     private Cipher cipher;
@@ -93,7 +93,7 @@ public class MachineKeySection {
      * @param fEncrypt true 加密，flase 解密
      * @param buf 待加工的数据
      * @return 结果
-     * @throws Exception
+     * @throws Exception 异常
      */
     public byte[] encryptOrDecryptData(boolean fEncrypt, byte[] buf) throws Exception {
         if (buf == null)

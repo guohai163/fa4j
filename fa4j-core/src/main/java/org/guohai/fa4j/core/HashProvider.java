@@ -42,8 +42,8 @@ public class HashProvider {
 
     /**
      * 生成指定长度的随机 byte 数组
-     * @param length
-     * @return
+     * @param length 指定生成的长度
+     * @return 生成的结果
      */
     public static byte[] randomByteArray(int length){
         byte[] arr = new byte[length];
@@ -53,9 +53,9 @@ public class HashProvider {
 
     /**
      * 反复数据填充，填充内容为buf的头20个字节，原因不明
-     * @param buf
-     * @param ivLength
-     * @return
+     * @param buf 原数据体
+     * @param ivLength 填充的长度
+     * @return 填充的数据
      */
     public static byte[] getIvHash(byte[] buf, int ivLength){
         int bytesToWrite = ivLength;
@@ -86,8 +86,9 @@ public class HashProvider {
 
     /**
      * 检查并移除hash值
-     * @param bufHashed
-     * @return
+     * @param bufHashed 待处理的数据
+     * @return 移除后的结果
+     * @throws Exception 异常
      */
     public byte[] checkHashAndRemove(byte[] bufHashed) throws Exception {
         byte[] originalData = new byte[bufHashed.length-HASH_SIZE];
@@ -103,10 +104,10 @@ public class HashProvider {
 
     /**
      * 检查hash值是否正确
-     * @param originalData
-     * @param originalHash
-     * @return
-     * @throws Exception
+     * @param originalData 数据体
+     * @param originalHash 原始的hash
+     * @return 检查的成功性
+     * @throws Exception 抛出的异常
      */
     public boolean checkHash(byte[] originalData, byte[] originalHash) throws Exception {
         byte[] hashCheckBlob  = getHMACSHAHash(originalData);
