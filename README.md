@@ -71,20 +71,20 @@
 
 ### 工作原理
 
-FormsAuthentication 是微软在 .Net 2.0时的产物一直持续到.net 4.8 之后 的.net core和现在的.net 6都不再集成该方法，主要做用是在分布式系统中加密用户标识并存储进cookies中使用。非常绘力的是我们公司的.net项目就使用了该功能。在进行站点集群 java 迁移的时候肯定还要考虑兼容性问题。
+FormsAuthentication 是微软在 .Net 2.0时的产物一直持续到.net 4.8 ; 之后 .net core和现在的.net 6都不再集成该方法，主要做用是在分布式系统中加密用户标识并存储进cookies中使用。我所在的公司.net项目就使用了该功能。在进行站点集群向 java 迁移的时候肯定还要考虑兼容性问题，不能一口气迁完就要考虑使用java生成同样的cookies来让旧系统可以正常的检测登录状态。
 
 首先感谢微软开源了 [.NET Framework 4.8的代码](https://referencesource.microsoft.com/)让我们有可能知道内部的实现方案。
 
-整个加密过程先做的是Ticket的串行化。分为2.0和4.0以及打了sp补丁后的两种串行化方案。先上对比图
+整个加密过程先做的是Ticket的串行化。分为2.0和4.0以及打了sp补丁后的两种串行化方案[ASP.NET 版本：4.0.30319.237 及以下全部使用旧的串行化方案]。先上对比图
 
 ![ticket](doc/ticket.png)
 
-1. 其中源码中标记为不安全的使用的是操作系统携带的 webengine.dll 中的 CookieAuthConstructTicket 方法。在网上能搜到这个dll的实现源码是个[CPP代码](https://github.com/selfrender/Windows-Server-2003/blob/5c6fe3db626b63a384230a1aa6b92ac416b0765f/com/netfx/src/framework/xsp/isapi/securityapi.cxx)，怀疑可以通过传输特定的 userdata 造成内存泄漏
+1. 其中源码中标记为不安全的使用的是操作系统携带的 webengine.dll 中的 CookieAuthConstructTicket 方法。在网上能搜到这个dll的实现源码是个[CPP代码](https://github.com/selfrender/Windows-Server-2003/blob/5c6fe3db626b63a384230a1aa6b92ac416b0765f/com/netfx/src/framework/xsp/isapi/securityapi.cxx)，源码中使用到的lstrlenW取字符串长度存在BUG。如果传输的字符串中间包含空字符比如\0长度计算就出错，并把\0以前的部分存储进入缓存区。也就是我如果注册一个账号 admin\0xxx 在有BUG的版本登录后我的用户标识会变为 admin。当然用java重构后也就不存在这个问题。
 2. 第二种方案被标记为安全的串行化，直接使用的.net自带的程序实现了序列化。
-3. 要注意在旧版本中的时间使用的是FileTime，这是一个从1601年1月1日为原点的100纳秒为单位的计时方案。新版本中的日期时间使用的是 Ticks，这是一个从0001年1月1日为原点100纳秒为单位的计时方案。
+3. 要注意在旧版本中的时间使用的是FileTime，这是一个从1601年1月1日为原点的100纳秒为单位的计时方案。新版本中的日期时间使用的是 Ticks，这是一个从0001年1月1日为原点100纳秒为单位的计时方案。使用java时计时原点都是1970年1月1日，需要进行相应的时间转换。
 4. 程序中的long转byte都是使用的小端存储，与java中的默认大端不一样需要手工转存。
 
-之后就是套填充，做hash。看一下最终的数据结构
+之后就是套填充，做hash。再进行指定的方案加密，看一下最终的数据结构
 
 ![cookies](doc/cookie.png)
 
