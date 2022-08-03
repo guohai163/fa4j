@@ -13,7 +13,7 @@
     <dependency>
       <groupId>org.guohai</groupId>
       <artifactId>fa4j-spring-boot-starter</artifactId>
-      <version>1.0</version>
+      <version>0.8.2</version>
     </dependency>
     ~~~
 
@@ -48,7 +48,7 @@
    <dependency>
      <groupId>org.guohai</groupId>
      <artifactId>fa4j-core</artifactId>
-     <version>1.0</version>
+     <version>0.8.2</version>
    </dependency>
    ~~~
 

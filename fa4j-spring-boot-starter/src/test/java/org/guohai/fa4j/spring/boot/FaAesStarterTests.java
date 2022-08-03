@@ -1,6 +1,7 @@
 package org.guohai.fa4j.spring.boot;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.guohai.fa4j.core.FormsAuthentication;
 import org.guohai.fa4j.core.FormsAuthenticationTicket;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.springframework.util.Assert;
 
 import java.util.Date;
 
+
+@Slf4j
 @SpringBootTest(classes = {org.guohai.fa4j.spring.boot.FaConfiguration.class})
 @TestPropertySource("classpath:aes.properties")
 public class FaAesStarterTests {
@@ -19,6 +22,8 @@ public class FaAesStarterTests {
 
     FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1,"userName", new Date(), new Date(), true, "userData", "/" );
 
+
+    private String key;
     @Test
     public void testAesFA(){
 

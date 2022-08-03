@@ -5,20 +5,25 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.guohai</groupId>
     <artifactId>fa4j-core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.8.2</version>
+    <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+    <name>FormsAuthentication for Java Core</name>
+    <description>This project will use the Java language to simulate the FormsAuthentication class before Microsoft .net 4.8 to implement the encryption and decryption of cookies</description>
+    <url>https://github.com/guohai163/fa4j</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
         </license>
     </licenses>
     <scm>
-        <connection>https://github.com/guohai163/fa4j.git</connection>
+        <connection>scm:git:git://github.com/guohai163/fa4j.git</connection>
+        <developerConnection>scm:git:ssh://github.com:guohai163/fa4j.git</developerConnection>
+        <url>http://github.com/guohai163/fa4j/tree/master</url>
     </scm>
     <developers>
         <developer>

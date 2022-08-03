@@ -56,12 +56,14 @@ public class UnsafeFaTicketSerializer {
     public static FormsAuthenticationTicket cookieAuthByte(byte[] data){
         FormsAuthenticationTicket ticket = new FormsAuthenticationTicket();
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        buffer.position(8);
+        byte[] timeLong = new byte[8];
+        // 跳过随机的字符串
+        buffer.get(timeLong);
         ticket.setVersion(buffer.get());
 
         ticket.setName(bytesToString(buffer));
 
-        byte[] timeLong = new byte[8];
+
         buffer.get(timeLong);
         ticket.setIssueDateUtcFileTime(bytesToLong(timeLong));
 
@@ -94,7 +96,7 @@ public class UnsafeFaTicketSerializer {
     }
 
     private static String bytesToString(ByteBuffer buffer){
-        StringBuffer data = new StringBuffer();
+        StringBuilder data = new StringBuilder();
         byte[] cw = new byte[2];
         while (true){
             buffer.get(cw);
