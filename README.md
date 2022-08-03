@@ -9,17 +9,17 @@
 1. 在 Spring Boot 项目中加入 fa4j-spring-boot-starter 依赖
 
     ```Maven```
-    ~~~ xml
+   ``` xml
     <dependency>
       <groupId>org.guohai</groupId>
       <artifactId>fa4j-spring-boot-starter</artifactId>
       <version>0.8.2</version>
     </dependency>
-    ~~~
+    ```
 
 2. 添加配置
 
-   ~~~ xml
+   ``` properties
    # hash验证时使用的key
    gh.fa.validation-key = 
    # 加密解密的key
@@ -30,11 +30,11 @@
    gh.fa.decryption = 
    # 串行化方案，true使用 .Net 4.0.30319.237 以前版本的串行方案，False 使用之后的串行方案
    gh.fa.use-legacy-forms-authentication-ticket-compatibility = false
-   ~~~
+   ```
    
 3. 在项目中进行加密/解密
 
-   ~~~ java
+   ``` java
    @Autowired
    FormsAuthentication formsAuthentication;
    // 加密后的值直接写cookies即可
@@ -42,7 +42,7 @@
    
    // 从cookies加载过来的串进行解密
    FormsAuthenticationTicket ticket = formsAuthentication.decrypt(cookieAuth);
-   ~~~
+   ```
 
 ### fa4j-core 的使用
 
