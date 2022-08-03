@@ -19,13 +19,18 @@
 
 2. 添加配置
 
-   ``` xml
+   ~~~ xml
+   # hash验证时使用的key
    gh.fa.validation-key = 
-   gh.fa.decryption-key= 
+   # 加密解密的key
+   gh.fa.decryption-key = 
+   # hash验证算法，目前只支持sha1
    gh.fa.validation = 
+   # 加密解密算法，目前支持 AES/DES/3DES
    gh.fa.decryption = 
+   # 串行化方案，true使用 .Net 4.0.30319.237 以前版本的串行方案，False 使用之后的串行方案
    gh.fa.use-legacy-forms-authentication-ticket-compatibility = false
-   ```
+   ~~~
    
 3. 在项目中进行加密/解密
 
