@@ -11,8 +11,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    <name>FormsAuthentication for Java Core</name>
-    <description>This project will use the Java language to simulate the FormsAuthentication class before Microsoft .net 4.8 to implement the encryption and decryption of cookies</description>
+    <name>fa4j-core</name>
+    <description>FormsAuthentication for Java Core</description>
     <url>https://github.com/guohai163/fa4j</url>
     <licenses>
         <license>
@@ -28,6 +28,7 @@
     <developers>
         <developer>
             <name>guohai</name>
+            <email>guohai@gmail.com</email>
             <url>http://guohai.org</url>
         </developer>
     </developers>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

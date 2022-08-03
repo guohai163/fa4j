@@ -27,6 +27,7 @@
   <developers>
     <developer>
       <name>guohai</name>
+      <email>guohai@gmail.com</email>
       <url>http://guohai.org</url>
     </developer>
   </developers>
@@ -45,6 +46,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.guohai</groupId>
+      <artifactId>fa4j-core</artifactId>
+      <version>0.8.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
@@ -57,17 +63,14 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guohai</groupId>
-      <artifactId>fa4j-core</artifactId>
-      <version>0.8.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-test-autoconfigure</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <distributionManagement>
