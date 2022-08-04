@@ -47,14 +47,21 @@ public class MachineKeySection {
 
     public  MachineKeySection(String decryptionKey, DecryptionEnum decryptionType) throws Exception {
 
-        decryptionKeyBlob = CryptoUtil.hexToBinary(decryptionKey);
+        byte[] keyTmp = CryptoUtil.hexToBinary(decryptionKey);
+        if(keyTmp.length>8 && decryptionType == DecryptionEnum.DES){
+            decryptionKeyBlob = new byte[8];
+            System.arraycopy(keyTmp,0, decryptionKeyBlob, 0, 8);
+        }else {
+            decryptionKeyBlob = new byte[keyTmp.length];
+            System.arraycopy(keyTmp,0, decryptionKeyBlob, 0, keyTmp.length);
+        }
         configureEncryptionObject(decryptionType);
     }
 
     /**
      * 根据不同的指定加密 算法生成不同的key和cipher对象
-     * @param decryption
-     * @throws Exception
+     * @param decryption 加密算法
+     * @throws Exception 抛出异常
      */
     private void configureEncryptionObject(DecryptionEnum decryption) throws Exception{
         switch (decryption){
@@ -67,6 +74,7 @@ public class MachineKeySection {
                 key = SecretKeyFactory.getInstance(DES_KEY_ALGORITHM).generateSecret(new DESKeySpec(decryptionKeyBlob));
                 cipher = Cipher.getInstance(DES_PADDING_PATTERN);
                 ivP = new IvParameterSpec(HashProvider.randomByteArray(8));
+//                ivP = new IvParameterSpec(new byte[8]);
                 break;
             case AES:
                 key = new SecretKeySpec(decryptionKeyBlob, AES_KEY_ALGORITHM);
@@ -114,7 +122,6 @@ public class MachineKeySection {
             // 解密
 
             cipher.init(Cipher.DECRYPT_MODE, key, ivP);
-            byte[] a = cipher.getIV();
             buf = cipher.doFinal(buf);
             int ivLength = roundupNumBitsToNumBytes(decryptionKeyBlob.length*8);
             byte[] tempBuf = new byte[buf.length-ivLength];
@@ -126,8 +133,8 @@ public class MachineKeySection {
 
     /**
      * 根据key的大小 计算 原始的补填数据量
-     * @param numBits
-     * @return
+     * @param numBits key的长度
+     * @return 返回填充的大小
      */
     private int roundupNumBitsToNumBytes(int numBits)
     {

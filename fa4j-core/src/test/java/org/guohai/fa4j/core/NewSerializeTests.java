@@ -26,9 +26,10 @@ public class NewSerializeTests {
     private static final String DECRYPTION_KEY = "08347853AC82432810FCFEE731314D6FD1A692AAF3F554B9";
 
     private static final String VALIDATION_KEY = "06681DC23D3B0AEBF340A8E1C493C37C8599BFFCA55849FF51C4ED158D45CB483D776848E339A12044CF0FA70C567AF781140806F327A3EEA17311EE5599FE3B";
+
     /**
      * 测试aes加密 和sha1 hash
-     * @throws Exception
+     * @throws Exception 测试没通过
      */
     @Test
     public void testAesAndSha1() throws Exception {
@@ -51,21 +52,16 @@ public class NewSerializeTests {
 
     /**
      * 测试des加密 和sha1 hash
-     * @throws Exception
+     * @throws Exception 测试没通过
      */
     @Test
     public void testDesAndSha1() throws Exception{
-        String encryptKey = "08347853AC82432810FCFEE731314D6FD1A692AAF3F554B9";
-        String validationKey = "06681DC23D3B0AEBF340A8E1C493C37C8599BFFCA55849FF51C4ED158D45CB483D776848E339A12044CF0FA70C567AF781140806F327A3EEA17311EE5599FE3B";
-
         String dotnetSecretMsg = "42E53E1E3D894EC930F0402D28E90225EEED506C3EFB1D50D29827E5F36DB6A4C088301ECB166F9CF2D3B70C9359A5CFA3DEFA80310C0DA75437189CD1FCCC624DC02343BF0412392AEA25E39CEEDFDE34C48E426C0D758081A892A4D64D95133876386ABE6E54A0AC3B0A39";
 
+        HashProvider hashProvider = new HashProvider(VALIDATION_KEY);
+        MachineKeySection machineKeySection = new MachineKeySection(DECRYPTION_KEY, DecryptionEnum.DES);
 
-
-        HashProvider hashProvider = new HashProvider(validationKey);
-        MachineKeySection machineKeySection = new MachineKeySection(encryptKey, DecryptionEnum.DES);
-
-        FormsAuthentication formsAuthentication = new FormsAuthentication(machineKeySection, hashProvider, true);
+        FormsAuthentication formsAuthentication = new FormsAuthentication(machineKeySection, hashProvider, SERIALIZE);
 
         FormsAuthenticationTicket dotnetTicket = formsAuthentication.decrypt(dotnetSecretMsg);
         Assert.assertNotNull(dotnetTicket);
@@ -76,7 +72,7 @@ public class NewSerializeTests {
 
     /**
      * 测试3des加密 和sha1 hash
-     * @throws Exception
+     * @throws Exception 测试没通过
      */
     @Test
     public void testTripleDesAndSha1() throws Exception{
