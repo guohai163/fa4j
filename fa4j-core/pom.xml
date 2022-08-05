@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.guohai</groupId>
     <artifactId>fa4j-core</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.5</version>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -40,15 +40,22 @@
             <version>1.18.24</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.18.0</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
     <distributionManagement>

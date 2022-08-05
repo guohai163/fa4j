@@ -85,4 +85,46 @@ public class OldSerializeTests {
         FormsAuthenticationTicket newTicket = formsAuthentication.decrypt(cooke);
         Assert.assertEquals(ticket.getUserData(), newTicket.getUserData());
     }
+
+    /**
+     * 测试AES加密 和 MD5 hash
+     * @throws Exception 测试没通过
+     */
+    @Test
+    public void testAesDesAndMd5() throws Exception{
+        String dotnetSecretMsg = "DC4595F54B1415B435A50FAE7CD517670677B464A3FE32A805DD61E66D43619814437C2F77A8CEA7DB122C1BF1FA9C148E9DF941DBFE5DF9E8CA1DFDE41868D3B7B0758EC06163F1A3ADCC9207D061C1BB9427A19AF0DB9D56FFE01088E5D839E6B8FE6C5273EC67120DA5CBFAAE61DF1A98D3A58804FEFB8AAEB515C6BE7BEF";
+
+        HashProvider hashProvider = new HashProvider(VALIDATION_KEY, HashTypeEnum.MD5);
+        MachineKeySection machineKeySection = new MachineKeySection(DECRYPTION_KEY, DecryptionEnum.AES);
+
+        FormsAuthentication formsAuthentication = new FormsAuthentication(machineKeySection, hashProvider, SERIALIZE);
+
+
+        String cooke = formsAuthentication.encrypt(ticket);
+        FormsAuthenticationTicket newTicket = formsAuthentication.decrypt(cooke);
+        Assert.assertEquals(ticket.getUserData(), newTicket.getUserData());
+
+        FormsAuthenticationTicket dotnetTicket = formsAuthentication.decrypt(dotnetSecretMsg);
+        Assert.assertNotNull(dotnetTicket);
+    }
+
+    /**
+     * 测试AES加密 和 sha256 hash
+     * @throws Exception 测试没通过
+     */
+    @Test
+    public void testAesDesAndSha256() throws Exception{
+        String dotnetSecretMsg = "7F244F0F073EE1C0DBDFCB33C83E7582CAA2C288F3C7CE4BAA2CFB2B0B45D444286D1167AB84B53E3ACA6B7993340A430D2605E9F9F5C2703E96DC3C471D679E33B1396F3A16966AF04104FCA4C1DC22E1C7F4AFDE2333F7A67FFFC908BCF9085FE45A87DC1411B63EF56E2BDFB653D8AD732E87A4CB28D8F2F99D0BA4AD924F27CDCFEA97EE43E80C8E17A295C036DE347CFFE50BF5BAA3A9D4C0C647FDFBF3";
+
+        HashProvider hashProvider = new HashProvider(VALIDATION_KEY, HashTypeEnum.SHA256);
+        MachineKeySection machineKeySection = new MachineKeySection(DECRYPTION_KEY, DecryptionEnum.AES);
+
+        FormsAuthentication formsAuthentication = new FormsAuthentication(machineKeySection, hashProvider, SERIALIZE);
+
+        FormsAuthenticationTicket dotnetTicket = formsAuthentication.decrypt(dotnetSecretMsg);
+        Assert.assertNotNull(dotnetTicket);
+        String cooke = formsAuthentication.encrypt(ticket);
+        FormsAuthenticationTicket newTicket = formsAuthentication.decrypt(cooke);
+        Assert.assertEquals(ticket.getUserData(), newTicket.getUserData());
+    }
 }

@@ -3,6 +3,7 @@ package org.guohai.fa4j.core;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
@@ -13,31 +14,88 @@ import java.util.Random;
  */
 public class HashProvider {
 
-    private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-    private static final int HASH_SIZE = 20;
 
-    private Mac mac;
+    /**
+     * .net 中的业务
+     *         private const int MD5_KEY_SIZE          = 64;
+     *         private const int MD5_HASH_SIZE         = 16;
+     *
+     *         private const int SHA1_KEY_SIZE         = 64;
+     *         private const int HMACSHA256_KEY_SIZE       = 64;
+     *         private const int HMACSHA384_KEY_SIZE       = 128;
+     *         private const int HMACSHA512_KEY_SIZE       = 128;
+     *         private const int SHA1_HASH_SIZE        = 20;
+     *         private const int HMACSHA256_HASH_SIZE      = 32;
+     *         private const int HMACSHA384_HASH_SIZE      = 48;
+     *         private const int HMACSHA512_HASH_SIZE      = 64;
+     */
 
+
+    private int hashSize;
+    private String algorithmName ;
+//    private int autoGenValidationKeySize;
+
+    private final Mac mac;
+
+    private final HashTypeEnum hashTypeEnum;
     /**
      * 密钥转为byte的存储
      */
-    private byte[] validationKeyBlob;
+    private final byte[] validationKeyBlob;
+
     /**
-     * 构造方法，负责初始化 Mac对象，
+     * 构造方法，负责初始化 Mac对象，。调用 此方法使用sha1进行hash
      * @param validationKey hash的key
      * @throws NoSuchAlgorithmException 生成密钥时，如果指定了错误的参数会抛
      * @throws InvalidKeyException 初始化时如果KEY有错误会抛出
      */
     public HashProvider(String validationKey) throws NoSuchAlgorithmException, InvalidKeyException {
+        this(validationKey, HashTypeEnum.SHA1);
+    }
+    
+    /**
+     * 构造方法，负责初始化 Mac对象，
+     * @param validationKey hash的key
+     * @param typeEnum hash算法
+     * @throws NoSuchAlgorithmException 生成密钥时，如果指定了错误的参数会抛
+     * @throws InvalidKeyException 初始化时如果KEY有错误会抛出
+     */
+    public HashProvider(String validationKey, HashTypeEnum typeEnum) throws NoSuchAlgorithmException, InvalidKeyException {
 
-
+        this.hashTypeEnum = typeEnum;
         validationKeyBlob = CryptoUtil.hexToBinary(validationKey);
+        initHashSize(typeEnum);
 
-        SecretKeySpec signinKey = new SecretKeySpec(validationKeyBlob, HMAC_SHA1_ALGORITHM);
+        SecretKeySpec signinKey = new SecretKeySpec(validationKeyBlob, algorithmName);
         //生成一个指定 Mac 算法 的 Mac 对象
-        mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
+        mac = Mac.getInstance(algorithmName);
         //用给定密钥初始化 Mac 对象
         mac.init(signinKey);
+    }
+
+    private void initHashSize(HashTypeEnum typeEnum){
+        switch (typeEnum){
+            case MD5:
+                hashSize = 16;
+                algorithmName = "HmacMD5";
+                break;
+            case SHA1:
+                hashSize = 20;
+                algorithmName = "HmacSHA1";
+                break;
+            case SHA256:
+                hashSize = 32;
+                algorithmName = "HmacSHA256";
+                break;
+            case SHA384:
+                hashSize = 48;
+                algorithmName = "HmacSHA384";
+                break;
+            case SHA512:
+                hashSize = 64;
+                algorithmName = "HmacSHA512";
+                break;
+        }
     }
 
     /**
@@ -51,37 +109,27 @@ public class HashProvider {
         return arr;
     }
 
-    /**
-     * 反复数据填充，填充内容为buf的头20个字节，原因不明
-     * @param buf 原数据体
-     * @param ivLength 填充的长度
-     * @return 填充的数据
-     */
-    public static byte[] getIvHash(byte[] buf, int ivLength){
-        int bytesToWrite = ivLength;
-        int bytesWritten = 0;
-        byte[] iv = new byte[ivLength];
-        byte[] hash = buf;
-        while (bytesWritten < ivLength)
-        {
-
-            int bytesToCopy = Math.min(HASH_SIZE, bytesToWrite);
-            System.arraycopy(hash, 0, iv, bytesWritten, bytesToCopy);
-
-            bytesWritten += bytesToCopy;
-            bytesToWrite -= bytesToCopy;
-        }
-        return iv;
-    }
 
     /**
      * 对BUF 按指定hash算法计算摘要值
      * @param buf 待处理字符串
      * @return hash后结果
      */
-    public byte[] getHMACSHAHash(byte[] buf) {
+    public byte[] getHMACSHAHash(byte[] buf) throws NoSuchAlgorithmException {
+        return this.hashTypeEnum == HashTypeEnum.MD5 ? hashDataUsingNonKeyedAlgorithm(buf) :mac.doFinal(buf);
+    }
 
-        return mac.doFinal(buf);
+    /**
+     * 无key的hash ，此处特指md5
+     * @param buf 待处理的数据
+     * @return hash后的结果串
+     */
+    public byte[] hashDataUsingNonKeyedAlgorithm(byte[] buf) throws NoSuchAlgorithmException {
+        byte[] tmpBuf = new byte[buf.length+validationKeyBlob.length];
+        System.arraycopy(buf,0, tmpBuf,0,buf.length);
+        System.arraycopy(validationKeyBlob, 0, tmpBuf, buf.length, validationKeyBlob.length);
+
+        return MessageDigest.getInstance("MD5").digest(tmpBuf);
     }
 
     /**
@@ -91,10 +139,10 @@ public class HashProvider {
      * @throws Exception 异常
      */
     public byte[] checkHashAndRemove(byte[] bufHashed) throws Exception {
-        byte[] originalData = new byte[bufHashed.length-HASH_SIZE];
-        byte[] originalHash = new byte[HASH_SIZE];
-        System.arraycopy(bufHashed,bufHashed.length-HASH_SIZE, originalHash,0, HASH_SIZE);
-        System.arraycopy(bufHashed,0, originalData,0, bufHashed.length-HASH_SIZE);
+        byte[] originalData = new byte[bufHashed.length-hashSize];
+        byte[] originalHash = new byte[hashSize];
+        System.arraycopy(bufHashed,bufHashed.length-hashSize, originalHash,0, hashSize);
+        System.arraycopy(bufHashed,0, originalData,0, bufHashed.length-hashSize);
         if(checkHash(originalData,originalHash)){
             return originalData;
         }else{
@@ -114,7 +162,7 @@ public class HashProvider {
         if(hashCheckBlob == null){
             throw new Exception("Hash is not appended to the end");
         }
-        if(hashCheckBlob.length != HASH_SIZE){
+        if(hashCheckBlob.length != hashSize){
             throw new Exception("Hash size length expected");
         }
 

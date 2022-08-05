@@ -111,7 +111,8 @@ public class MachineKeySection {
 
         if(fEncrypt){
             // 加密
-            byte[] ivHash = HashProvider.getIvHash(buf, roundupNumBitsToNumBytes(decryptionKeyBlob.length*8));
+//            byte[] ivHash = HashProvider.getIvHash(buf, roundupNumBitsToNumBytes(decryptionKeyBlob.length*8));
+            byte[] ivHash = HashProvider.randomByteArray(roundupNumBitsToNumBytes(decryptionKeyBlob.length*8));
             byte[] tempBuf = new byte[buf.length+ ivHash.length];
             System.arraycopy(ivHash,0,tempBuf,0,ivHash.length);
             System.arraycopy(buf,0, tempBuf,ivHash.length,buf.length);

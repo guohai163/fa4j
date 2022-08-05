@@ -1,8 +1,8 @@
 package org.guohai.fa4j.core;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 代替.net 的System.Web.Security 名称空间下同名类
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class FormsAuthentication {
 
-    private static final Logger log = LoggerFactory.getLogger(FormsAuthentication.class);
+    protected final Log log = LogFactory.getLog(getClass());
 
     /**
      * 支持的最大票据长度
@@ -63,7 +63,7 @@ public class FormsAuthentication {
         byte[] bBlob;
         // 通过安全级别参数，判断串行方案
         if(useLegacyFormsAuthenticationTicketCompatibility){
-            log.debug("user {} use unsafe serialize", ticket.getName());
+            log.debug("user "+ticket.getName()+" use unsafe serialize");
             bBlob = UnsafeFaTicketSerializer.cookieAuthConstructTicket(ticket);
         }else {
             bBlob = FormsAuthenticationTicketSerializer.serialize(ticket);
@@ -71,7 +71,7 @@ public class FormsAuthentication {
 
         //串行出错
         if(bBlob == null){
-            log.error("name {} serialize fail", ticket.getName());
+//            log.error("name {} serialize fail", ticket.getName());
             return null;
         }
 
@@ -79,7 +79,7 @@ public class FormsAuthentication {
         byte[] hashBlob = this.hashProvider.getHMACSHAHash(bBlob);
         if (hashBlob == null)
         {
-            log.error("name {} get iv hash fail", ticket.getName());
+//            log.error("name {} get iv hash fail", ticket.getName());
             return null;
         }
         byte[]  cookieBlob = new byte[hashBlob.length + bBlob.length];
@@ -91,7 +91,7 @@ public class FormsAuthentication {
 
         if (encryptedCookieBlob == null)
         {
-            log.error("name {} encrypt fail", ticket.getName());
+//            log.error("name {} encrypt fail", ticket.getName());
             return null;
         }
 
@@ -117,7 +117,7 @@ public class FormsAuthentication {
             bBlob = CryptoUtil.hexToBinary(data);
         }
         if (bBlob == null || bBlob.length < 1) {
-            log.error("cookies data to byte array fail");
+//            log.error("cookies data to byte array fail");
             throw new IllegalArgumentException("encryptedTicket");
         }
         // 移除 hash部分
@@ -133,8 +133,10 @@ public class FormsAuthentication {
             }
 
         }
-        log.error("user cookies data Decrypt fail");
+//        log.error("user cookies data Decrypt fail");
         return null;
     }
+
+//    public abstract void setAuthCookie(String userName, boolean createPersistentCookie);
 }
 
